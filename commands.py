@@ -12,10 +12,10 @@ async def getCommand(message):
   cmd = message.content
   
 
-  # ------------------------TODAY----------------------------
+  # ------------------------LATEST----------------------------
 
 
-  if cmd.lower() == "%c today":
+  if cmd.lower() == "%c latest":
     response = requests.get("https://api.covid19tracker.ca/summary")
     rawData = json.loads(response.text)
     jsonData = rawData["data"][0]
@@ -23,7 +23,7 @@ async def getCommand(message):
     settings = {
       # ---------required------------
       # string
-      "title" : ("COVID-19 Today (Canada): " + jsonData["latest_date"] + "\n\n"), 
+      "title" : ("COVID-19 (Canada) as of: " + jsonData["latest_date"] + "\n\n"), 
 
       # string
       "description" : ("Case count: `" + jsonData["change_cases"] + "`\n\n"
@@ -123,6 +123,74 @@ async def getCommand(message):
       
       # string url
       "thumbnail" : client.user.avatar_url,
+      
+      # string url
+      "image": None,
+
+      "footer": ("Data is taken from an API that updates as fast as possible. Actual counts may vary slightly."),
+      
+      # field_list is a list of fields, 
+      # each field in field_list has 3 indexes,
+      # index 1: name of field
+      # index 2: value of field
+      # index 3: inline
+      
+      "new_field" : [] 
+      # each field should have 3 indexes: "[name, value, inline]"
+      
+    }
+    await send.send_embed(message.channel, settings)
+
+    # ------------------------VACCINES----------------------------
+
+
+  elif cmd.lower() == "%c vac":
+    response = requests.get("https://api.covid19tracker.ca/summary")
+    rawData = json.loads(response.text)
+    jsonData = rawData["data"][0]
+    print(jsonData)
+    settings = {
+      # ---------required------------
+      # string
+      "title" : ("COVID-19 Vaccinations (Canada): \n\n"), 
+
+      # string
+      "description" : ("Date: " + jsonData["latest_date"] + "\n\n"
+        
+      + "Change in Vaccinations: `" + jsonData["change_vaccinations"] + "`\n\n"
+      
+      + "Change in Vaccinated Persons: `" + jsonData["change_vaccinated"] + "`\n\n"
+      
+      + "Change in Distributed Vaccines: `" + jsonData["change_vaccines_distributed"] + "`\n\n"
+      
+      + "──────────────────────────────────────\n\n"
+      
+      + "Total Vaccinations: `" + jsonData["total_vaccinations"] + "`\n\n"
+      
+      + "Total Persons Vaccinated: `" + jsonData["total_vaccinated"] + "`\n\n"
+      
+      + "Total Vaccines Distributed: `" + jsonData["total_vaccines_distributed"] + "`\n\n\n"),
+      
+      # hex color code
+      "color" : 0x3498db,
+
+      # ---------optional(set to None if unneeded)------------
+      # string url
+      "titleurl" : None, 
+      
+      #Note if you have author description keys (ex. authorurl) filled you must have the author key filled as well
+      
+      # string 
+      "author" : client.user,
+
+      # string url
+      "authorurl" : None,
+
+      # string url
+      "icon" : "https://cdn.discordapp.com/attachments/797302970210451498/812747573890514984/9k.png",
+      
+      # string url
+      "thumbnail" : "https://cdn.discordapp.com/attachments/797302970210451498/813054362477658112/1_5270930.png",
       
       # string url
       "image": None,
