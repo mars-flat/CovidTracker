@@ -11,14 +11,17 @@ async def on_ready():
   print(f"{client.user} initialized")
   commands.client = client
 
+prefix = "%c"
+
 @client.event
 async def on_message(message):
     if not commands.client:
       if message.author != client.user:
-       # await message.channel.send("unintalized... please wait")
-       pass
+        # await message.channel.send("unintalized... please wait")
+        pass
       return
-    await commands.getCommand(message)
+    if prefix in message.content:
+      await commands.getCommand(message)
 
 keep_alive()
 token = os.environ.get("BOT_TOKEN")
