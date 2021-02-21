@@ -48,7 +48,7 @@ async def getCommand(message):
       #Note if you have author description keys (ex. authorurl) filled you must have the author key filled as well
       
       # string 
-      "author" : client.user,
+      "author" : "CovidTracker",
 
       # string url
       "authorurl" : None,
@@ -113,7 +113,7 @@ async def getCommand(message):
       #Note if you have author description keys (ex. authorurl) filled you must have the author key filled as well
       
       # string 
-      "author" : client.user,
+      "author" : "CovidTracker",
 
       # string url
       "authorurl" : None,
@@ -141,14 +141,15 @@ async def getCommand(message):
     }
     await send.send_embed(message.channel, settings)
 
-    # ------------------------VACCINES----------------------------
+
+  # ------------------------VACCINES----------------------------
 
 
   elif cmd.lower() == "%c vac":
     response = requests.get("https://api.covid19tracker.ca/summary")
     rawData = json.loads(response.text)
     jsonData = rawData["data"][0]
-    print(jsonData)
+    # print(jsonData)
     settings = {
       # ---------required------------
       # string
@@ -163,7 +164,7 @@ async def getCommand(message):
       
       + "Change in Distributed Vaccines: `" + jsonData["change_vaccines_distributed"] + "`\n\n"
       
-      + "──────────────────────────────────────\n\n"
+      + "────────────────\n\n"
       
       + "Total Vaccinations: `" + jsonData["total_vaccinations"] + "`\n\n"
       
@@ -181,7 +182,7 @@ async def getCommand(message):
       #Note if you have author description keys (ex. authorurl) filled you must have the author key filled as well
       
       # string 
-      "author" : client.user,
+      "author" : "CovidTracker",
 
       # string url
       "authorurl" : None,
@@ -196,6 +197,63 @@ async def getCommand(message):
       "image": None,
 
       "footer": ("Data is taken from an API that updates as fast as possible. Actual counts may vary slightly."),
+      
+      # field_list is a list of fields, 
+      # each field in field_list has 3 indexes,
+      # index 1: name of field
+      # index 2: value of field
+      # index 3: inline
+      
+      "new_field" : [] 
+      # each field should have 3 indexes: "[name, value, inline]"
+      
+    }
+    await send.send_embed(message.channel, settings)
+  
+
+  # ------------------------HELP----------------------------
+
+
+  elif cmd.lower() == "%c help":
+    settings = {
+      # ---------required------------
+      # string
+      "title" : "CovidTracker", 
+
+      # string
+      "description" : "**API-based Covid 19 Tracker**\n" + 
+      "This bot provides up-to-date(Based on API) information on Covid-19 in Canada.\n\n" + 
+
+      "**Current Commands:** \n\n" + 
+      "**%c latest** - Gets the latest Covid-19 information in Canada.\n" + 
+      "**%c total** - Provides cumulative statistics on Covid-19 in Canada.\n" + 
+      "**%c vac** - gets the latest Covid-19 vaccination statistics in Canada.\n",
+      
+      # hex color code
+      "color" : 0x3498db,
+
+      # ---------optional(set to None if unneeded)------------
+      # string url
+      "titleurl" : "https://api.covid19tracker.ca/", 
+      
+      #Note if you have author description keys (ex. authorurl) filled you must have the author key filled as well
+      
+      # string 
+      "author" : "CovidTracker",
+
+      # string url
+      "authorurl" : None,
+
+      # string url
+      "icon" : "https://cdn.discordapp.com/attachments/797302970210451498/812747573890514984/9k.png",
+      
+      # string url
+      "thumbnail" : None,
+      
+      # string url
+      "image": None,
+
+      "footer": ("Version 1.2.1"),
       
       # field_list is a list of fields, 
       # each field in field_list has 3 indexes,
