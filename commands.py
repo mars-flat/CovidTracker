@@ -253,7 +253,7 @@ async def getCommand(message):
       # string url
       "image": None,
 
-      "footer": ("Version 1.2.1"),
+      "footer": ("Version 1.2.5"),
       
       # field_list is a list of fields, 
       # each field in field_list has 3 indexes,
