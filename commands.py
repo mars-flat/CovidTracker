@@ -1,6 +1,9 @@
 import requests
 import json
 import send
+import graph
+import os
+import discord
 
 client = None
 
@@ -209,6 +212,74 @@ async def getCommand(message):
       
     }
     await send.send_embed(message.channel, settings)
+
+
+  # ------------------------GRAPH----------------------------
+
+  
+  elif cmd.lower() == "%c graph":
+    response = requests.get("https://api.covid19tracker.ca/reports")
+    rawData = json.loads(response.text)
+    jsonData = rawData["data"]
+    
+    xCoords = []
+    yCoords = []
+    for i in range(len(jsonData) - 1):
+      xCoords.append(i)
+      yCoords.append(jsonData[i]["change_cases"])
+    
+    earliestDate = jsonData[0]["date"]
+    plot = await graph.createGraph(xCoords, yCoords, earliestDate)
+    plot.savefig(fname='plot')
+    file=discord.File("plot.png", filename = "plot.png")
+
+    settings = {
+      # ---------required------------
+      # string
+      "title" : "CovidTracker", 
+
+      # string
+      "description" : "Graph",
+      
+      # hex color code
+      "color" : 0x3498db,
+
+      # ---------optional(set to None if unneeded)------------
+      # string url
+      "titleurl" : "https://api.covid19tracker.ca/", 
+      
+      #Note if you have author description keys (ex. authorurl) filled you must have the author key filled as well
+      
+      # string 
+      "author" : "CovidTracker",
+
+      # string url
+      "authorurl" : None,
+
+      # string url
+      "icon" : "https://cdn.discordapp.com/attachments/797302970210451498/812747573890514984/9k.png",
+      
+      # string url
+      "thumbnail" : None,
+      
+      # string url
+      "image": "attachment://plot.png",
+
+      "footer": ("Version 1.2.5"),
+      
+      # field_list is a list of fields, 
+      # each field in field_list has 3 indexes,
+      # index 1: name of field
+      # index 2: value of field
+      # index 3: inline
+      
+      "new_field" : [] 
+      # each field should have 3 indexes: "[name, value, inline]"
+      
+    }
+    await send.send_file_embed(message.channel, file, settings)
+    plot.clf() 
+    os.remove('plot.png')
   
 
   # ------------------------HELP----------------------------
@@ -227,7 +298,8 @@ async def getCommand(message):
       "**Current Commands:** \n\n" + 
       "**%c latest** - Gets the latest Covid-19 information in Canada.\n" + 
       "**%c total** - Provides cumulative statistics on Covid-19 in Canada.\n" + 
-      "**%c vac** - gets the latest Covid-19 vaccination statistics in Canada.\n",
+      "**%c vac** - Gets the latest Covid-19 vaccination statistics in Canada.\n" +
+      "**%c graph** - Creates a graph of daily cases of Covid-19 in Canada.\n",
       
       # hex color code
       "color" : 0x3498db,
@@ -253,7 +325,7 @@ async def getCommand(message):
       # string url
       "image": None,
 
-      "footer": ("Version 1.2.5"),
+      "footer": ("Version 1.2.7"),
       
       # field_list is a list of fields, 
       # each field in field_list has 3 indexes,
@@ -266,3 +338,6 @@ async def getCommand(message):
       
     }
     await send.send_embed(message.channel, settings)
+
+
+  

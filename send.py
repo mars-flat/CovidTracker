@@ -10,6 +10,10 @@ async def send_embed(recipient, settings):
   test = await recipient.send(embed=get_embed(settings))
   return test
 
+async def send_file_embed(recipient, sfile, settings):
+  return await recipient.send(file=sfile, embed=get_embed(settings))
+
+
 def get_embed(settings):
   if not settings:
     return
