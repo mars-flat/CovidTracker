@@ -4,6 +4,7 @@ import send
 import graph
 import os
 import discord
+import time
 
 client = None
 
@@ -218,6 +219,8 @@ async def getCommand(message):
 
   
   elif cmd.lower() == "%c graph":
+    start = time.time() 
+
     response = requests.get("https://api.covid19tracker.ca/reports")
     rawData = json.loads(response.text)
     jsonData = rawData["data"]
@@ -233,13 +236,15 @@ async def getCommand(message):
     plot.savefig(fname='plot')
     file=discord.File("plot.png", filename = "plot.png")
 
+    end = time.time()
+
     settings = {
       # ---------required------------
       # string
       "title" : "CovidTracker", 
 
       # string
-      "description" : "Graph",
+      "description" : "Generated in " + '{0:.3f}'.format(end - start) + " seconds.",
       
       # hex color code
       "color" : 0x3498db,
@@ -265,7 +270,7 @@ async def getCommand(message):
       # string url
       "image": "attachment://plot.png",
 
-      "footer": ("Version 1.2.5"),
+      "footer": None,
       
       # field_list is a list of fields, 
       # each field in field_list has 3 indexes,
@@ -325,7 +330,7 @@ async def getCommand(message):
       # string url
       "image": None,
 
-      "footer": ("Version 1.2.7"),
+      "footer": ("Version 1.2.8"),
       
       # field_list is a list of fields, 
       # each field in field_list has 3 indexes,
