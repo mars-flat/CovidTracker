@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "covidtracker"
-version = "1.2.8"
+version = "1.4.1"
 description = "Covid-19 Canada Tracker Bot"
 authors = ["Shane Chen"]
 
