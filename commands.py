@@ -80,6 +80,87 @@ async def getCommand(message):
     }
     await send.send_embed(message.channel, settings)
 
+  
+  # ------------------------LATEST[Provinces]----------------------------
+
+
+  elif "%p latest" in cmd.lower():
+    split = cmd.split()
+    if len(split) != 3:
+      return await send.send_message(message.channel, "Please specify a province.")
+    prov = split[2].upper()
+
+    response = requests.get("https://api.covid19tracker.ca/summary/split")
+    rawData = json.loads(response.text)
+    jsonData = rawData["data"]
+    found = False
+    data = {}
+    for i in range(len(jsonData)):
+      if jsonData[i]["province"] == prov:
+        found = True
+        data = jsonData[i]
+        break
+    
+    if not found:
+      return await send.send_message(message.channel, "Could not find province `" + prov + "`.")
+    
+    settings = {
+      # ---------required------------
+      # string
+      "title" : ("COVID-19 (" + prov + ") as of: " + str(data["date"]) + "\n\n"), 
+
+      # string
+      "description" : ("Case count: `" + str(data["change_cases"]) + "`\n\n"
+      
+      + "Fatality count: `" + str(data["change_fatalities"]) + "`\n\n"
+      
+      + "Tests completed: `" + str(data["change_tests"]) + "`\n\n"
+      
+      + "Change in Hospitalizations: `" + str(data["change_hospitalizations"]) + "`\n\n"
+      
+      + "Change in Critical cases: `" + str(data["change_criticals"]) + "`\n\n"
+      
+      + "Recovery count: `" + str(data["change_recoveries"]) + "`\n\n\n"),
+      
+      # hex color code
+      "color" : 0x3498db,
+
+      # ---------optional(set to None if unneeded)------------
+      # string url
+      "titleurl" : None, 
+      
+      #Note if you have author description keys (ex. authorurl) filled you must have the author key filled as well
+      
+      # string 
+      "author" : "CovidTracker",
+
+      # string url
+      "authorurl" : None,
+
+      # string url
+      "icon" : "https://cdn.discordapp.com/attachments/797302970210451498/812747573890514984/9k.png",
+      
+      # string url
+      "thumbnail" : client.user.avatar_url,
+      
+      # string url
+      "image": None,
+
+      "footer": ("Data is taken from an API that updates as fast as possible. Actual counts may vary slightly."),
+      
+      # field_list is a list of fields, 
+      # each field in field_list has 3 indexes,
+      # index 1: name of field
+      # index 2: value of field
+      # index 3: inline
+      
+      "new_field" : [] 
+      # each field should have 3 indexes: "[name, value, inline]"
+      
+    }
+    
+    await send.send_embed(message.channel, settings)
+
 
   # ------------------------TOTAL----------------------------
 

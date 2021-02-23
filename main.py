@@ -11,7 +11,7 @@ async def on_ready():
   print(f"{client.user} initialized")
   commands.client = client
 
-prefix = "%c"
+prefix = "%"
 
 @client.event
 async def on_message(message):
